@@ -1,4 +1,12 @@
 mixin game()
     .game
+        .game__controller
+            +button({text:'bindActions'}).game__button.game__button_bindActions
+            +button({text:'enableAction'}).game__button.game__button_enableAction
+            +button({text:'disableAction'}).game__button.game__button_disableAction
+            +button({text:'attach'}).game__button.game__button_attach
+            +button({text:'detach'}).game__button.game__button_detach
+            +button({text:'isActionActive'}).game__button.game__button_isActionActive
+            +button({text:'isKeyPressed'}).game__button.game__button_isKeyPressed
         .game__field
             .game__character

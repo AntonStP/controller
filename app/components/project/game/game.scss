@@ -1,10 +1,28 @@
 .game {
+  $space: 20px;
+  $controller-h: 90px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
   min-height: 100vh;
+  @include option(padding, 0 0 $space+$controller-h);
   background: #f1f1f1;
+  box-sizing: border-box;
+
+  &__controller {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: space-between;
+    @include option(width, 444px);
+    @include option(height, $controller-h);
+    @include option(margin, 0 0 $space);
+  }
+
+  &__button {
+  }
 
   &__field {
     position: relative;
