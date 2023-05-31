@@ -26,6 +26,19 @@
 }
 
 
+@function image($path, $inline: false, $absolute: false) {
+  @if $inline {
+    @if $absolute {
+      @return url(inline-image($path));
+    } @else {
+      @return url(inline-image("app/images/#{$path}"));
+    }
+  } @else {
+    @return url("../images/#{$path}");
+  }
+}
+
+
 
 @mixin hover($selector: false){
   @if $selector {

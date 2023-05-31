@@ -1,0 +1,26 @@
+.game {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  background: #f1f1f1;
+
+  &__field {
+    position: relative;
+    @include option(width, 444px);
+    @include option(height, 444px);
+    border: 2px solid rgba(0, 6, 66, 0.64);
+    background: #ffffff;
+    box-sizing: border-box;
+  }
+
+  &__character {
+    position: absolute;
+    top: 0;
+    left: 0;
+    @include option(width, 50px);
+    @include option(height, 50px);
+    background: image('char.png') no-repeat center/contain;
+  }
+}
