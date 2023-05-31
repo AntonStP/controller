@@ -1,0 +1,41 @@
+.custom-page {
+  min-height: 100%;
+  position: relative;
+  @extend %DEFAULT;
+  letter-spacing: 0.02em;
+
+  //background: #ee392e;
+  overflow: hidden;
+
+  img {
+    height: 100%;
+    display: block;
+    position: relative;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    will-change: transform;
+    //transform: translateZ(0);
+  }
+
+  .lazyload,
+  .lazyloading {
+    opacity: 0;
+  }
+  .lazyloaded {
+    opacity: 1;
+  }
+  :not(.timeline__bg).lazyloaded {
+    transition: opacity 500ms ease-in-out;
+  }
+
+}
+
+
+html, body{
+  position: unset !important;
+  overflow: unset !important;
+}
+

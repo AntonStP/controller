@@ -1,0 +1,21 @@
+@import "normalize";
+@import "constants";
+@import "adaptive";
+@import "mixins";
+@import "texts";
+
+@import "./../components/project/project";
+$font-size: 33px;
+$font-color: green;
+
+h1 {
+  font-size: $font-size;
+  color: $font-color;
+  font-family: "Montserrat-Regular", Helvetica, sans-serif;
+}
+
+.block {
+  width: 500px;
+  height: 500px;
+  //background: url("../images/b1.png") no-repeat center / cover;
+}

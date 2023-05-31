@@ -1,0 +1,28 @@
+block constants
+
+block copyright
+   - copyright = require("./components/copyright.json");
+        
+
+block mixins
+
+doctype html
+html(lang='ru')&attributes(HTML)
+  head
+      meta(http-equiv="Content-Type" content="text/html;charset=UTF-8")
+      block title
+          title!= copyright.og.title
+
+      block meta
+          meta(name="description" content=copyright.og.description)
+          block viewport-meta
+              meta(name="viewport" content=metaViewport || "width=device-width")
+          meta(name="mobile-web-app-capable" content="yes")
+          meta(http-equiv="X-UA-Compatible" content="IE=edge,chrome=1")
+          meta(name="format-detection" content="telephone=no")
+          meta(name="apple-mobile-web-app-capable" content="yes")
+          meta(name="apple-mobile-web-app-status-bar-style" content="black")
+
+    
+  body&attributes(BODY)
+    block page

@@ -1,0 +1,12 @@
+mixin picture(content,params)
+  if content.attr
+    picture&attributes(content.attr)
+  else
+    picture
+      if content.list
+        +pug-list(content.list, "picture-source")
+      img&attributes(content.img)&attributes(attributes)
+
+
+mixin picture-source(content,params)
+  source&attributes(content)&attributes(attributes)

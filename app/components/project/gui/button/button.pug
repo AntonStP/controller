@@ -1,0 +1,10 @@
+mixin button(content,params)
+  #{content.tag || 'button'}(href=content.href target=content.target class=content.class || "button")&attributes(content.attr)&attributes(attributes)
+    .button__bg
+    if content.textD
+      .button__text.button__text_d!=content.textD
+    if content.textM
+      .button__text.button__text_m!=content.textM
+    if content.text
+      .button__text!=content.text
+    block

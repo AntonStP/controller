@@ -1,0 +1,14 @@
+{
+  "og": {
+    "title": "test",
+    "description": "test-description",
+    "canonical_url": "",
+    "image": {
+      "default": {
+        "val": "",
+        "width": 1200,
+        "height": 630
+      }
+    }
+  }
+}
