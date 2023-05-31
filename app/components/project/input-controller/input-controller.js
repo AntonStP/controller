@@ -1,4 +1,4 @@
-class InputController {
+export default class InputController {
     constructor(actionsToBind, target) {
 
     }
