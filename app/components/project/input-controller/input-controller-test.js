@@ -1,7 +1,7 @@
 import InputController from './input-controller';
 
 const target = document.querySelector('.game__character');
-const controller = new InputController('a','a');
+const controller = new InputController('a',target);
 
 const bindActions = document.querySelector('.game__button_bindActions');
 bindActions.addEventListener("click", function () {
