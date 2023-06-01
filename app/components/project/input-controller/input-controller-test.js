@@ -1,8 +1,20 @@
 import InputController from './input-controller';
 
-const target = document.querySelector('.game__character');
-const controller = new InputController('a',target);
 
+const actions = {//ключи кнопок и активность
+    left: {keys: [37,65], enabled: true},
+    up: {keys: [38,87], enabled: true},
+    right: {keys: [39,68], enabled: true},
+    down: {keys: [40,83], enabled: true}
+};
+const target = document.querySelector('.game__character');
+const controller = new InputController(actions,target);
+
+
+
+
+
+//слушатели на кнопки
 const bindActions = document.querySelector('.game__button_bindActions');
 bindActions.addEventListener("click", function () {
     controller.bindActions();
