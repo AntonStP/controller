@@ -7,35 +7,28 @@ export default class InputController {
     constructor(actionsToBind, target) {
         this.target = target;
         this.actionsToBind = actionsToBind;
-        this.keysPressed = new Set();
     }
 
     bindActions() {//Добавляет в контроллер переданные активности
+        if(!this.enabled && !this.focused) return;
         document.addEventListener('keydown', (e)=>this._keyDownHandler(e));
-        document.addEventListener('keydown', (e)=>this._move(e));
         document.addEventListener('keyup', (e)=>this._keyUpHandler(e));
         console.log(this.actionsToBind)
         console.log('bindActions')
     }
     _keyDownHandler(event) {
-        if(this.keysPressed?.size<2)  this.keysPressed.add(event.keyCode);
-        console.log(this.keysPressed);
+        this.keysPressed = event.keyCode;
+        let myEvent = new CustomEvent(this.ACTION_ACTIVATED, {detail:{action:event.keyCode}})
+        document.dispatchEvent(myEvent);
+        // console.log(this.keysPressed);
     }
-    _keyUpHandler(event) {
-        this.keysPressed.delete(event.keyCode);
-        console.log( this.keysPressed);
+    _keyUpHandler() {
+        this.keysPressed = null;
+        let myEvent = new CustomEvent(this.ACTION_DEACTIVATED)
+        document.dispatchEvent(myEvent);
+        // console.log(this.keysPressed);
     }
-    _move() {
-        console.log("this.actionsToBind", this.actionsToBind)
-        const arrayKeys = [...this.keysPressed];
-        arrayKeys.forEach((el,id)=> {
-            this.actionsToBind.forEach((action,idA)=> {
-                if(action.keys.indexOf(el)==-1 && action.enabled) {
-                    console.log("action", action)
-                }
-            })
-        })
-    }
+
 
 
     enableAction() {//Включает объявленную активность - включает генерацию событий для этой активности при изменении её статуса

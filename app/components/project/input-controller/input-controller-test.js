@@ -2,13 +2,21 @@ import InputController from './input-controller';
 
 
 const actions = {//ключи кнопок и активность
-    left: {keys: [37,65], enabled: true},
-    up: {keys: [38,87], enabled: true},
-    right: {keys: [39,68], enabled: true},
-    down: {keys: [40,83], enabled: true}
+    'left': {keys: [37,65], enabled: true},
+    'up': {keys: [38,87], enabled: true},
+    'right': {keys: [39,68], enabled: true},
+    'down': {keys: [40,83], enabled: true}
 };
+const field = document.querySelector('.game__field');
 const target = document.querySelector('.game__character');
+let top = 0;
+let left = 0;
+// target.style.transition = ".1s linear";
+const maxLeft = field.offsetWidth - target.offsetWidth;
+const maxTop = field.offsetHeight - target.offsetHeight;
+
 const controller = new InputController(actions,target);
+
 
 
 
@@ -18,6 +26,35 @@ const controller = new InputController(actions,target);
 const bindActions = document.querySelector('.game__button_bindActions');
 bindActions.addEventListener("click", function () {
     controller.bindActions();
+});
+
+document.addEventListener('input-controller:action-activated', (e)=> {
+    const action = e.detail.action;
+    let side = '';
+    for(const[key,value] of Object.entries(actions)) {
+        if(!value.enabled) return;
+        if(actions[key].keys.indexOf(action) !== -1) side = key;
+        if(side==='up' && top-10>0) {
+            top = top-10;
+            target.style.top = `${top}px`;
+            return;
+        }
+        else if(side==='down' && top+10<maxTop) {
+            top = top+10;
+            target.style.top = `${top}px`;
+            return;
+        }
+        else if(side==='left' && left-10>0) {
+            left = left-10;
+            target.style.left = `${left}px`;
+            return;
+        }
+        else if(side==='right' && left+10<maxLeft) {
+            left = left+10;
+            target.style.left = `${left}px`;
+            return;
+        }
+    }
 });
 
 
