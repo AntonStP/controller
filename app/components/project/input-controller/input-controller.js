@@ -72,8 +72,7 @@ export default class InputController {
 
 
     isActionActive(action) {//Проверяет активирована ли переданная активность в контроллере ( напр. для клавиатуры: зажата ли одна из соответствующих этой активности кнопок)
-        return this.actionsToBind[action].enabled ? true : false;
-        console.log('isActionActive')
+        return this.actionsToBind[action].enabled;
     }
 
     isKeyPressed() {//Проверяет нажата ли переданная кнопка в контроллере

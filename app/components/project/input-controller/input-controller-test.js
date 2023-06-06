@@ -90,7 +90,9 @@ detach.addEventListener("click", function () {
 
 const isActionActive = document.querySelector('.game__button_isActionActive');
 isActionActive.addEventListener("click", function () {
-    controller.isActionActive();
+    for(const[key,value] of Object.entries(actions)) {
+        console.log(`${key} is Active: `,controller.isActionActive(key));
+    }
 });
 
 
