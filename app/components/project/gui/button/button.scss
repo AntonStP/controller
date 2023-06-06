@@ -47,12 +47,10 @@
     overflow: hidden;
     will-change: transform;
     background: #205466;
-    @include mod("card") {
-      background: transparent;
-      &:after {
-        background: #173342;
-      }
+    @include mod('active') {
+      background: #9a2422;
     }
+
 
     &:after {
       content: "";
@@ -67,6 +65,9 @@
       transition: opacity .3s ease-in-out;
       opacity: 0;
       will-change: transform;
+      @include mod('active') {
+        background: #6e1c1c;
+      }
     }
   }
 

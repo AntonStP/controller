@@ -73,6 +73,7 @@ disableAction.addEventListener("click", function () {
 const attach = document.querySelector('.game__button_attach');
 attach.addEventListener("click", function () {
     controller.attach();
+    attach.classList.toggle('button_active')
 });
 
 
