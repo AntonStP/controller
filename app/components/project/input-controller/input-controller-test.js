@@ -33,7 +33,7 @@ document.addEventListener('input-controller:action-activated', (e)=> {
     const action = e.detail.action;
     let side = '';
     for(const[key,value] of Object.entries(actions)) {
-        if(!value.enabled) return;
+        if(!controller.isActionActive(key)) return;
         if(actions[key].keys.indexOf(action) !== -1) side = key;
         if(side==='up' && top-10>0) {
             top = top-10;

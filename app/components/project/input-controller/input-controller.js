@@ -6,7 +6,7 @@ export default class InputController {
 
     constructor(actionsToBind, target) {
         this.target = target;
-
+        this.actionsToBind = actionsToBind;
         this._keyDownHandler = this._keyDownHandler.bind(this);
         this._keyUpHandler = this._keyUpHandler.bind(this);
     }
@@ -71,7 +71,8 @@ export default class InputController {
     ////////////////////////////////////////////////////////////////////////////////////
 
 
-    isActionActive() {//Проверяет активирована ли переданная активность в контроллере ( напр. для клавиатуры: зажата ли одна из соответствующих этой активности кнопок)
+    isActionActive(action) {//Проверяет активирована ли переданная активность в контроллере ( напр. для клавиатуры: зажата ли одна из соответствующих этой активности кнопок)
+        return this.actionsToBind[action].enabled ? true : false;
         console.log('isActionActive')
     }
 
