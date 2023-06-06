@@ -26,6 +26,7 @@ const controller = new InputController(actions,target);
 const bindActions = document.querySelector('.game__button_bindActions');
 bindActions.addEventListener("click", function () {
     controller.bindActions();
+    if(controller.enabled) bindActions.classList.add('button_active')
 });
 
 document.addEventListener('input-controller:action-activated', (e)=> {
@@ -72,14 +73,18 @@ disableAction.addEventListener("click", function () {
 
 const attach = document.querySelector('.game__button_attach');
 attach.addEventListener("click", function () {
-    controller.attach();
-    attach.classList.toggle('button_active')
+    controller.attach(target);
+    attach.classList.add('button_active')
 });
 
 
 const detach = document.querySelector('.game__button_detach');
 detach.addEventListener("click", function () {
     controller.detach();
+    attach.classList.remove('button_active');
+    bindActions.classList.remove('button_active');
+    console.log(controller.enabled)
+    console.log(controller.focused)
 });
 
 

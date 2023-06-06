@@ -6,24 +6,27 @@ export default class InputController {
 
     constructor(actionsToBind, target) {
         this.target = target;
-        this.actionsToBind = actionsToBind;
+
+        this._keyDownHandler = this._keyDownHandler.bind(this);
+        this._keyUpHandler = this._keyUpHandler.bind(this);
     }
 
     bindActions() {//Добавляет в контроллер переданные активности
-        if(!this.enabled && !this.focused) return;
-        document.addEventListener('keydown', (e)=>this._keyDownHandler(e));
-        document.addEventListener('keyup', (e)=>this._keyUpHandler(e));
-        console.log(this.actionsToBind)
-        console.log('bindActions')
+        console.log('this.enabled',this.enabled)
+        console.log('this.focused',this.focused)
+        if(this.enabled && this.focused) {
+            document.addEventListener('keydown', this._keyDownHandler);
+            document.addEventListener('keyup', this._keyUpHandler);
+            console.log('bindActions');
+        }
     }
     _keyDownHandler(event) {
-        this.keysPressed = event.keyCode;
+        console.log('_keyDownHandler')
         let myEvent = new CustomEvent(this.ACTION_ACTIVATED, {detail:{action:event.keyCode}})
         document.dispatchEvent(myEvent);
         // console.log(this.keysPressed);
     }
     _keyUpHandler() {
-        this.keysPressed = null;
         let myEvent = new CustomEvent(this.ACTION_DEACTIVATED)
         document.dispatchEvent(myEvent);
         // console.log(this.keysPressed);
@@ -43,10 +46,11 @@ export default class InputController {
     ////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////Привязка/отвязка///////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
-    attach() {//Нацеливает контроллер на переданный DOM-элемент (вешает слушатели)
+    attach(target) {//Нацеливает контроллер на переданный DOM-элемент (вешает слушатели)
+        this.target = target;
         if(this.target!==null) this.enabled = true;
+        this.focused = true;
         document.addEventListener('visibilitychange', this._focusHandler);
-        console.log("attach");
     }
     _focusHandler() {
         if(document.visibilityState==='visible') {
@@ -56,9 +60,11 @@ export default class InputController {
     }
     detach() {//Отцепляет контроллер от активного DOM-элемента и деактивирует контроллер
         this.enabled = false;
+        this.focused = false;
         this.target = null;
         document.removeEventListener('visibilitychange', this._focusHandler);
-        console.log("detach");
+        document.removeEventListener('keydown', this._keyDownHandler);
+        document.removeEventListener('keyup', this._keyUpHandler);
     }
     ////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
