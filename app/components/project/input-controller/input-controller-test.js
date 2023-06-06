@@ -33,7 +33,8 @@ document.addEventListener('input-controller:action-activated', (e)=> {
     const action = e.detail.action;
     let side = '';
     for(const[key,value] of Object.entries(actions)) {
-        if(!controller.isActionActive(key)) return;
+        console.log(key, controller.isActionActive(key))
+        if(!controller.isActionActive(key)) continue;
         if(actions[key].keys.indexOf(action) !== -1) side = key;
         if(side==='up' && top-10>0) {
             top = top-10;
@@ -61,13 +62,13 @@ document.addEventListener('input-controller:action-activated', (e)=> {
 
 const enableAction = document.querySelector('.game__button_enableAction');
 enableAction.addEventListener("click", function () {
-    controller.enableAction();
+    controller.enableAction("up");
 });
 
 
 const disableAction = document.querySelector('.game__button_disableAction');
 disableAction.addEventListener("click", function () {
-    controller.disableAction();
+    controller.disableAction("up");
 });
 
 

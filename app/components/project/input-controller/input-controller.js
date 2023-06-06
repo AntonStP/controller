@@ -34,12 +34,14 @@ export default class InputController {
 
 
 
-    enableAction() {//Включает объявленную активность - включает генерацию событий для этой активности при изменении её статуса
-        console.log('enableAction')
+    enableAction(action) {//Включает объявленную активность - включает генерацию событий для этой активности при изменении её статуса
+        if(this.actionsToBind.hasOwnProperty(action)) this.actionsToBind[action].enabled = true;
+        console.log('disableAction up')
     }
 
-    disableAction() {//Деактивирует объявленную активность - выключает генерацию событий для этой активности
-        console.log('disableAction')
+    disableAction(action) {//Деактивирует объявленную активность - выключает генерацию событий для этой активности
+        if(this.actionsToBind.hasOwnProperty(action)) this.actionsToBind[action].enabled = false;
+        console.log('disableAction up')
     }
 
 
