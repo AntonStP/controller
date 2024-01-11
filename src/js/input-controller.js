@@ -1,4 +1,5 @@
 import Keyboard from "./keyboard-plugin.js";
+import Mouse from "./mouse-plugin.js";
 
 export default class InputController {
     enabled = false; // <bool>: Включение/отключение генерации событий контроллера
@@ -8,26 +9,36 @@ export default class InputController {
         ACTION_DEACTIVATED: "input-controller:action-deactivated", //одна из кнопок активности отжата
         CONTROLLER_ATTACH: "input-controller:attach", //привязка контроллера
         CONTROLLER_DETACH: "input-controller:detach", //отвязка контроллера
-        KEY_IS_PRESSED: "input-controller:isPressed" //проверка нажатия
+        KEY_IS_PRESSED: "input-controller:isPressed", //проверка нажатия
+        ACTION_CHANGE: "input-controller:action-change"
     }
     currentActivities = new Set();
-    ACTION_CHANGE = "input-controller:action-change";
-    plugins = [];
+    activePlugins = new Set();
 
     constructor(actionsToBind, target) {
         this.target = target;
         this.actionsToBind = actionsToBind;
 
-        new Keyboard(this.actionsToBind, this.currentActivities, this.eventList);
-        // keyboardPlugin
-        // this.plugins.push(keyboardPlugin);
-        //
-        //this.plugins = this.plugins
+        this.initPlugins = this.initPlugins.bind(this);
+
+        this.initPlugins();
+        document.addEventListener(this.eventList.ACTION_CHANGE, this.initPlugins);
     }
 
+    initPlugins() {
+        for(const [,value] of Object.entries(this.actionsToBind)) {
+            if(!!value?.mouse) this.activePlugins.add('Mouse')
+            if(!!value?.keys) this.activePlugins.add('Keyboard')
+        }
+        for (const plugin of [Mouse, Keyboard]) {
+            if(this.activePlugins.has(plugin.name)) new plugin(this.actionsToBind, this.currentActivities, this.eventList)
+        }
+        // new Keyboard(this.actionsToBind, this.currentActivities, this.eventList);
+    }
 
     bindActions(newAction) {
         this.actionsToBind = { ...this.actionsToBind, ...newAction };
+        this.initPlugins();
         console.log('this.actionsToBind: ', this.actionsToBind);
     }
 

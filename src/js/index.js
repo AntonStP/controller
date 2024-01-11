@@ -4,7 +4,7 @@ const actions = {
     //ключи кнопок и активность
     left: { keys: [37, 65], enabled: true },
     up: { keys: [38, 87], enabled: true },
-    right: { keys: [39, 68], enabled: true },
+    right: { keys: [39, 68],  mouse: 1, enabled: true },
     down: { keys: [40, 83], enabled: true }
 };
 const field = document.querySelector(".game__field");
@@ -20,7 +20,7 @@ const controller = new InputController(actions, target);
 //слушатели на кнопки
 const bindActions = document.querySelector(".game__button_bindActions");
 bindActions.addEventListener("click", function () {
-    controller.bindActions({ jump: { keys: [32], enabled: true } });
+    controller.bindActions({ jump: { keys: [32],  mouse: 2, enabled: true } });
 });
 
 //добавление/удаление активностей
