@@ -13,13 +13,12 @@ export default class InputController {
         this.actionsToBind = actionsToBind;
         this._keyDownHandler = this._keyDownHandler.bind(this);
         this._keyUpHandler = this._keyUpHandler.bind(this);
-        console.log("HEYYAAA")
+
         // const keyboardPlugin = new Keyboard();
         // this.plugins.push(keyboardPlugin);
         //
         //this.plugins = this.plugins
     }
-
 
 
     bindActions(newAction) {
@@ -67,14 +66,14 @@ export default class InputController {
         //Включает объявленную активность - включает генерацию событий для этой активности при изменении её статуса
         if (this.actionsToBind.hasOwnProperty(action))
             this.actionsToBind[action].enabled = true;
-        console.log("--->", "ableAction: " + action, "<---");
+        console.log("enableAction: " + action);
     }
 
     disableAction(action) {
         //Деактивирует объявленную активность - выключает генерацию событий для этой активности
         if (this.actionsToBind.hasOwnProperty(action))
             this.actionsToBind[action].enabled = false;
-        console.log("--->", "disableAction: " + action, "<---");
+        console.log("disableAction: " + action);
     }
 
     attach(target) {
@@ -88,11 +87,10 @@ export default class InputController {
         console.log('attached');
     }
     _focusHandler() {
-        console.log("", document.visibilityState, "");
         if (document.visibilityState === "visible") {
             this.focused = true;
         } else this.focused = false;
-        console.log("--->", "this.focused", this.focused, "<---");
+        console.log("focused", this.focused);
     }
     detach() {
         //Отцепляет контроллер от активного DOM-элемента и деактивирует контроллер
@@ -102,13 +100,12 @@ export default class InputController {
         document.removeEventListener("visibilitychange", this._focusHandler);
         document.removeEventListener("keydown", this._keyDownHandler);
         document.removeEventListener("keyup", this._keyUpHandler);
-        console.log('dettached');
+        console.log('detached');
     }
 
     isActionActive(action) {
         //Проверяет активирована ли переданная активность в контроллере
         //( напр. для клавиатуры: зажата ли одна из соответствующих этой активности кнопок)
-        console.log(Array.from(this.currentActivities));
         return this.currentActivities.has(action);
     }
 

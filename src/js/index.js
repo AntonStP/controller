@@ -46,7 +46,6 @@ document.addEventListener("input-controller:action-activated", (e) => {
             default:
                 break;
         }
-        console.log("activity", activity);
         target.style.top = `${top}px`;
         target.style.left = `${left}px`;
         target.style.backgroundColor = color;
@@ -90,8 +89,6 @@ detach.addEventListener("click", function () {
     controller.detach();
     attach.classList.remove("button_active");
     bindActions.classList.remove("button_active");
-    console.log(controller.enabled);
-    console.log(controller.focused);
 });
 
 const isActionActive = document.querySelector(".game__button_isActionActive");
@@ -101,5 +98,5 @@ isActionActive.addEventListener("click", function () {
 
 const isKeyPressed = document.querySelector(".game__button_isKeyPressed");
 isKeyPressed.addEventListener("click", function () {
-    console.log("--->", controller.isKeyPressed(37, 38), "<---");
+    console.log("Переданные кнопки нажаты: ", controller.isKeyPressed(37, 38));
 });
