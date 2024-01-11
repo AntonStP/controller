@@ -1,7 +1,3 @@
-// import Keyboard from "./keyboard-plugin";
-
-// console.log("Keyboard", Keyboard);
-
 export default class InputController {
     enabled = false; // <bool>: Включение/отключение генерации событий контроллера
     focused = false; // <bool>: Находится ли окно с целью контроллера в фокусе
@@ -17,9 +13,9 @@ export default class InputController {
         this.actionsToBind = actionsToBind;
         this._keyDownHandler = this._keyDownHandler.bind(this);
         this._keyUpHandler = this._keyUpHandler.bind(this);
-
-        const keyboardPlugin = new Keyboard();
-        this.plugins.push(keyboardPlugin);
+        console.log("HEYYAAA")
+        // const keyboardPlugin = new Keyboard();
+        // this.plugins.push(keyboardPlugin);
         //
         //this.plugins = this.plugins
     }
@@ -28,7 +24,7 @@ export default class InputController {
 
     bindActions(newAction) {
         this.actionsToBind = { ...this.actionsToBind, ...newAction };
-        console.log(this.actionsToBind);
+        console.log('this.actionsToBind: ', this.actionsToBind);
     }
 
     _whatIsActivity(pressedKey) {
@@ -89,6 +85,7 @@ export default class InputController {
         document.addEventListener("visibilitychange", this._focusHandler);
         document.addEventListener("keydown", this._keyDownHandler);
         document.addEventListener("keyup", this._keyUpHandler);
+        console.log('attached');
     }
     _focusHandler() {
         console.log("", document.visibilityState, "");
@@ -105,6 +102,7 @@ export default class InputController {
         document.removeEventListener("visibilitychange", this._focusHandler);
         document.removeEventListener("keydown", this._keyDownHandler);
         document.removeEventListener("keyup", this._keyUpHandler);
+        console.log('dettached');
     }
 
     isActionActive(action) {

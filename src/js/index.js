@@ -1,4 +1,4 @@
-import InputController from "./input-controller";
+import InputController from "./input-controller.js";
 
 const actions = {
     //ключи кнопок и активность
