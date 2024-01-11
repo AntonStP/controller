@@ -1,20 +1,25 @@
+import Keyboard from "./keyboard-plugin.js";
+
 export default class InputController {
     enabled = false; // <bool>: Включение/отключение генерации событий контроллера
     focused = false; // <bool>: Находится ли окно с целью контроллера в фокусе
-    currentKeys = new Set();
+    eventList = {
+        ACTION_ACTIVATED: "input-controller:action-activated", //название события активации активности (одна из кнопок активности нажата)
+        ACTION_DEACTIVATED: "input-controller:action-deactivated", //одна из кнопок активности отжата
+        CONTROLLER_ATTACH: "input-controller:attach", //привязка контроллера
+        CONTROLLER_DETACH: "input-controller:detach", //отвязка контроллера
+        KEY_IS_PRESSED: "input-controller:isPressed" //проверка нажатия
+    }
     currentActivities = new Set();
-    ACTION_ACTIVATED = "input-controller:action-activated"; //название события активации активности (одна из кнопок активности нажата)
-    ACTION_DEACTIVATED = "input-controller:action-deactivated"; //одна из кнопок активности отжата
     ACTION_CHANGE = "input-controller:action-change";
     plugins = [];
 
     constructor(actionsToBind, target) {
         this.target = target;
         this.actionsToBind = actionsToBind;
-        this._keyDownHandler = this._keyDownHandler.bind(this);
-        this._keyUpHandler = this._keyUpHandler.bind(this);
 
-        // const keyboardPlugin = new Keyboard();
+        new Keyboard(this.actionsToBind, this.currentActivities, this.eventList);
+        // keyboardPlugin
         // this.plugins.push(keyboardPlugin);
         //
         //this.plugins = this.plugins
@@ -24,42 +29,6 @@ export default class InputController {
     bindActions(newAction) {
         this.actionsToBind = { ...this.actionsToBind, ...newAction };
         console.log('this.actionsToBind: ', this.actionsToBind);
-    }
-
-    _whatIsActivity(pressedKey) {
-        let activity = "";
-        for (const [key] of Object.entries(this.actionsToBind)) {
-            if (
-                this.actionsToBind[key].keys.indexOf(pressedKey) !== -1 &&
-                this.actionsToBind[key].enabled
-            )
-                activity = key;
-        }
-        return activity;
-    }
-    _keyDownHandler(event) {
-        this.currentKeys.add(event.keyCode);
-        const _action = this._whatIsActivity(event.keyCode);
-        if (_action && !this.currentActivities.has(_action)) {
-            this.currentActivities.add(_action);
-            let myEvent1 = new CustomEvent(this.ACTION_ACTIVATED, {
-                detail: { action: _action }
-            });
-            document.dispatchEvent(myEvent1);
-        }
-    }
-    _keyUpHandler(event) {
-        const action = this._whatIsActivity(event.keyCode);
-        this.currentKeys.delete(event.keyCode);
-        this.currentActivities.clear();
-        [...this.currentKeys].forEach((el) => {
-            const _action = this._whatIsActivity(el);
-            if (_action) this.currentActivities.add(_action);
-        });
-        let myEvent2 = new CustomEvent(this.ACTION_DEACTIVATED, {
-            detail: { action: action }
-        });
-        document.dispatchEvent(myEvent2);
     }
 
     enableAction(action) {
@@ -82,8 +51,8 @@ export default class InputController {
         if (this.target !== null) this.enabled = true;
         this.focused = true;
         document.addEventListener("visibilitychange", this._focusHandler);
-        document.addEventListener("keydown", this._keyDownHandler);
-        document.addEventListener("keyup", this._keyUpHandler);
+        const attachEvent = new CustomEvent(this.eventList.CONTROLLER_ATTACH);
+        document.dispatchEvent(attachEvent);
         console.log('attached');
     }
     _focusHandler() {
@@ -98,8 +67,8 @@ export default class InputController {
         this.focused = false;
         this.target = null;
         document.removeEventListener("visibilitychange", this._focusHandler);
-        document.removeEventListener("keydown", this._keyDownHandler);
-        document.removeEventListener("keyup", this._keyUpHandler);
+        const detachEvent = new CustomEvent(this.eventList.CONTROLLER_DETACH);
+        document.dispatchEvent(detachEvent);
         console.log('detached');
     }
 
@@ -110,11 +79,9 @@ export default class InputController {
     }
 
     isKeyPressed(...keys) {
-        //Проверяет нажата ли переданная кнопка в контроллер
-        const keysPressed = {};
-        for (let key of keys) {
-            keysPressed[key] = this.currentKeys.has(key);
-        }
-        return keysPressed;
+        const isPressedEvent = new CustomEvent(this.eventList.KEY_IS_PRESSED, {
+            detail: {keys: keys}
+        });
+        document.dispatchEvent(isPressedEvent);
     }
 }

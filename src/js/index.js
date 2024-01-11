@@ -98,5 +98,5 @@ isActionActive.addEventListener("click", function () {
 
 const isKeyPressed = document.querySelector(".game__button_isKeyPressed");
 isKeyPressed.addEventListener("click", function () {
-    console.log("Переданные кнопки нажаты: ", controller.isKeyPressed(37, 38));
+    controller.isKeyPressed(37, 38);
 });
