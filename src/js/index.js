@@ -25,6 +25,7 @@ bindActions.addEventListener("click", function () {
 
 //добавление/удаление активностей
 document.addEventListener("input-controller:action-activated", (e) => {
+    console.log('ЕДЕТ')
     const activity = e.detail.action;
     function move() {
         switch (activity) {
