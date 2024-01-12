@@ -1,5 +1,6 @@
 import Keyboard from "./keyboard-plugin.js";
 import Mouse from "./mouse-plugin.js";
+import EventDispatcher from "./event-dispatcher.js";
 
 export default class InputController {
     enabled = false; // <bool>: Включение/отключение генерации событий контроллера
@@ -20,6 +21,7 @@ export default class InputController {
         this.actionsToBind = actionsToBind;
 
         this.initPlugins = this.initPlugins.bind(this);
+        this.EventDispatcher = new EventDispatcher();//объявление диспатчера
 
         this.initPlugins();
         document.addEventListener(this.eventList.ACTION_CHANGE, this.initPlugins);
@@ -31,7 +33,7 @@ export default class InputController {
             if(!!value?.keys) this.activePlugins.add('Keyboard')
         }
         for (const plugin of [Mouse, Keyboard]) {
-            if(this.activePlugins.has(plugin.name)) new plugin(this.actionsToBind, this.currentActivities, this.eventList)
+            if(this.activePlugins.has(plugin.name)) new plugin(this.EventDispatcher, this.actionsToBind, this.currentActivities, this.eventList)
         }
         // new Keyboard(this.actionsToBind, this.currentActivities, this.eventList);
     }
@@ -39,6 +41,7 @@ export default class InputController {
     bindActions(newAction) {
         this.actionsToBind = { ...this.actionsToBind, ...newAction };
         this.initPlugins();
+        this.EventDispatcher.dispatch(this.eventList.ACTION_CHANGE);
         console.log('this.actionsToBind: ', this.actionsToBind);
     }
 
@@ -62,8 +65,7 @@ export default class InputController {
         if (this.target !== null) this.enabled = true;
         this.focused = true;
         document.addEventListener("visibilitychange", this._focusHandler);
-        const attachEvent = new CustomEvent(this.eventList.CONTROLLER_ATTACH);
-        document.dispatchEvent(attachEvent);
+        this.EventDispatcher.dispatch(this.eventList.CONTROLLER_ATTACH);
         console.log('attached');
     }
     _focusHandler() {
@@ -78,8 +80,7 @@ export default class InputController {
         this.focused = false;
         this.target = null;
         document.removeEventListener("visibilitychange", this._focusHandler);
-        const detachEvent = new CustomEvent(this.eventList.CONTROLLER_DETACH);
-        document.dispatchEvent(detachEvent);
+        this.EventDispatcher.dispatch(this.eventList.CONTROLLER_DETACH);
         console.log('detached');
     }
 
@@ -90,9 +91,6 @@ export default class InputController {
     }
 
     isKeyPressed(...keys) {
-        const isPressedEvent = new CustomEvent(this.eventList.KEY_IS_PRESSED, {
-            detail: {keys: keys}
-        });
-        document.dispatchEvent(isPressedEvent);
+        this.EventDispatcher.dispatch(this.eventList.KEY_IS_PRESSED, {keys: keys});
     }
 }

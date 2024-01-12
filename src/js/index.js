@@ -20,7 +20,7 @@ const controller = new InputController(actions, target);
 //слушатели на кнопки
 const bindActions = document.querySelector(".game__button_bindActions");
 bindActions.addEventListener("click", function () {
-    controller.bindActions({ jump: { keys: [32],  mouse: 2, enabled: true } });
+    controller.bindActions({ jump: { keys: [32], enabled: true } });
 });
 
 //добавление/удаление активностей

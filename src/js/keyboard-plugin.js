@@ -1,7 +1,8 @@
 export default class Keyboard {
     currentKeys = new Set();
 
-    constructor(actionsToBind, currentActivities, eventList) {
+    constructor(EventDispatcher, actionsToBind, currentActivities, eventList) {
+        this.EventDispatcher = EventDispatcher;
         this.actionsToBind = actionsToBind;
         this.currentActivities = currentActivities;
         this.eventList = eventList;
@@ -15,6 +16,11 @@ export default class Keyboard {
         document.addEventListener(this.eventList.CONTROLLER_ATTACH, this.attach);
         document.addEventListener(this.eventList.CONTROLLER_DETACH, this.detach);
         document.addEventListener(this.eventList.KEY_IS_PRESSED, (e)=>this.isKeyPressed(e.detail.keys));
+        document.addEventListener(this.eventList.ACTION_CHANGE, ()=> {
+            this.detach()
+            this.attach()
+        });
+        console.log('проверка приходящих экшенов', this.actionsToBind)
     }
 
 
@@ -48,10 +54,7 @@ export default class Keyboard {
         const _action = this._whatIsActivity(event.keyCode);
         if (_action && !this.currentActivities.has(_action)) {
             this.currentActivities.add(_action);
-            let myEvent1 = new CustomEvent(this.eventList.ACTION_ACTIVATED, {
-                detail: {action: _action}
-            });
-            document.dispatchEvent(myEvent1);
+            this.EventDispatcher.dispatch(this.eventList.ACTION_ACTIVATED,{action: _action})
         }
     }
 
@@ -64,10 +67,7 @@ export default class Keyboard {
             const _action = this._whatIsActivity(el);
             if (_action) this.currentActivities.add(_action);
         });
-        let myEvent2 = new CustomEvent(this.eventList.ACTION_DEACTIVATED, {
-            detail: {action: action}
-        });
-        document.dispatchEvent(myEvent2);
+        this.EventDispatcher.dispatch(this.eventList.ACTION_DEACTIVATED,{action: action})
     }
 
     isKeyPressed(keys) {
