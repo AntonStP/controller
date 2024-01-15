@@ -21,7 +21,6 @@ export default class InputController {
         this.actionsToBind = actionsToBind;
 
         this.initPlugins = this.initPlugins.bind(this);
-        this.isActionActive= this.isActionActive.bind(this);
         this.EventDispatcher = new EventDispatcher();//объявление диспатчера
 
         this.initPlugins();
@@ -84,7 +83,7 @@ export default class InputController {
         this.EventDispatcher.dispatch(this.eventList.CONTROLLER_DETACH);
         console.log('detached');
     }
-w
+
     isActionActive(action) {
         //Проверяет активирована ли переданная активность в контроллере
         //( напр. для клавиатуры: зажата ли одна из соответствующих этой активности кнопок)

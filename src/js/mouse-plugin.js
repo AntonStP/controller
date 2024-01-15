@@ -20,11 +20,9 @@ export default class Mouse {
     }
 
     attach() {
-        console.log('attach mouse')
         document.addEventListener("pointerdown", this._pointerDownHandler);
         document.addEventListener("pointerup", this._pointerUpHandler);
     }
-
 
     detach() {
         document.removeEventListener("pointerdown", this._pointerDownHandler);
@@ -44,7 +42,7 @@ export default class Mouse {
 
 
     _pointerDownHandler(event) {
-        const action = this._whatIsActivity(event.buttons);
+        const action = this._whatIsActivity(event.button);
         if (action && [...this.currentActivities].filter((el)=> el?.name===action && el?.input ==='mouse').length==0) {
             this.currentActivities.add({name: action, input: 'mouse'});
             if (action && [...this.currentActivities].filter((el)=> el?.name===action).length<=1) {
@@ -55,8 +53,14 @@ export default class Mouse {
 
 
     _pointerUpHandler(event) {
-        const action = this._whatIsActivity(event.buttons);
+        const action = this._whatIsActivity(event.button);
+        const currentActivitiesArray = [...this.currentActivities];
         this.currentActivities.clear();
+        currentActivitiesArray.forEach((el) => {
+            if ((el.name==action && el.input!=="mouse") || el.name!==action) this.currentActivities.add(el);
+        });
+        this.EventDispatcher.dispatch(this.eventList.ACTION_DEACTIVATED,{action: action, input: 'mouse'})
+
         this.EventDispatcher.dispatch(this.eventList.ACTION_DEACTIVATED,{action: action, input: 'mouse'})
     }
 

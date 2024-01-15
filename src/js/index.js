@@ -4,7 +4,7 @@ const actions = {
     //ключи кнопок и активность
     left: { keys: [37, 65], enabled: true },
     up: { keys: [38, 87], enabled: true },
-    right: { keys: [39, 68],  mouse: 4, enabled: true },
+    right: { keys: [39, 68],  mouse: 1, enabled: true },
     down: { keys: [40, 83], enabled: true }
 };
 const field = document.querySelector(".game__field");
