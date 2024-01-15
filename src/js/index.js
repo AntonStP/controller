@@ -4,7 +4,7 @@ const actions = {
     //ключи кнопок и активность
     left: { keys: [37, 65], enabled: true },
     up: { keys: [38, 87], enabled: true },
-    right: { keys: [39, 68],  mouse: 1, enabled: true },
+    right: { keys: [39, 68],  mouse: 4, enabled: true },
     down: { keys: [40, 83], enabled: true }
 };
 const field = document.querySelector(".game__field");
@@ -25,8 +25,8 @@ bindActions.addEventListener("click", function () {
 
 //добавление/удаление активностей
 document.addEventListener("input-controller:action-activated", (e) => {
-    console.log('ЕДЕТ')
     const activity = e.detail.action;
+    const input = e.detail.input;
     function move() {
         switch (activity) {
             case "up":
@@ -50,7 +50,7 @@ document.addEventListener("input-controller:action-activated", (e) => {
         target.style.top = `${top}px`;
         target.style.left = `${left}px`;
         target.style.backgroundColor = color;
-        if (controller.currentActivities.has(activity)) {
+        if ([...controller.currentActivities].filter((el)=> el?.name==activity).length!==0) {
             window.requestAnimationFrame(move);
         }
     }
@@ -59,10 +59,11 @@ document.addEventListener("input-controller:action-activated", (e) => {
 
 document.addEventListener("input-controller:action-deactivated", (e) => {
     const activity = e.detail.action;
+    const input = e.detail.input;
     function move() {
         if (activity === "jump") color = "yellowgreen";
         target.style.backgroundColor = color;
-        if (controller.currentActivities.has(activity)) {
+        if ([...controller.currentActivities].filter((el)=> el?.name==activity && el?.input ===input).length!==0) {
             window.requestAnimationFrame(move);
         }
     }

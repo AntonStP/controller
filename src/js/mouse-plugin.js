@@ -44,11 +44,12 @@ export default class Mouse {
 
 
     _pointerDownHandler(event) {
-        const _action = this._whatIsActivity(event.buttons);
-        console.log('_action', _action)
-        if (_action && !this.currentActivities.has(_action)) {
-            this.currentActivities.add(_action);
-            this.EventDispatcher.dispatch(this.eventList.ACTION_ACTIVATED,{action: _action})
+        const action = this._whatIsActivity(event.buttons);
+        if (action && [...this.currentActivities].filter((el)=> el?.name===action && el?.input ==='mouse').length==0) {
+            this.currentActivities.add({name: action, input: 'mouse'});
+            if (action && [...this.currentActivities].filter((el)=> el?.name===action).length<=1) {
+                this.EventDispatcher.dispatch(this.eventList.ACTION_ACTIVATED,{action: action, input: 'mouse'})
+            }
         }
     }
 
@@ -56,7 +57,7 @@ export default class Mouse {
     _pointerUpHandler(event) {
         const action = this._whatIsActivity(event.buttons);
         this.currentActivities.clear();
-        this.EventDispatcher.dispatch(this.eventList.ACTION_DEACTIVATED,{action: action})
+        this.EventDispatcher.dispatch(this.eventList.ACTION_DEACTIVATED,{action: action, input: 'mouse'})
     }
 
 }

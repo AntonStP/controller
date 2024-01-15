@@ -51,10 +51,12 @@ export default class Keyboard {
 
     _keyDownHandler(event) {
         this.currentKeys.add(event.keyCode);
-        const _action = this._whatIsActivity(event.keyCode);
-        if (_action && !this.currentActivities.has(_action)) {
-            this.currentActivities.add(_action);
-            this.EventDispatcher.dispatch(this.eventList.ACTION_ACTIVATED,{action: _action})
+        const action = this._whatIsActivity(event.keyCode);
+        if (action && [...this.currentActivities].filter((el)=> el?.name===action && el?.input ==='key').length==0) {
+            this.currentActivities.add({name:action, input: "key"});
+            if (action && [...this.currentActivities].filter((el)=> el?.name===action).length<=1) {
+                this.EventDispatcher.dispatch(this.eventList.ACTION_ACTIVATED,{action: action, input: 'key'})
+            }
         }
     }
 
@@ -62,12 +64,12 @@ export default class Keyboard {
     _keyUpHandler(event) {
         const action = this._whatIsActivity(event.keyCode);
         this.currentKeys.delete(event.keyCode);
+        const currentActivitiesArray = [...this.currentActivities];
         this.currentActivities.clear();
-        [...this.currentKeys].forEach((el) => {
-            const _action = this._whatIsActivity(el);
-            if (_action) this.currentActivities.add(_action);
+        currentActivitiesArray.forEach((el) => {
+            if ((el.name==action && el.input!=="key") || el.name!==action) this.currentActivities.add(el);
         });
-        this.EventDispatcher.dispatch(this.eventList.ACTION_DEACTIVATED,{action: action})
+        this.EventDispatcher.dispatch(this.eventList.ACTION_DEACTIVATED,{action: action, input: 'key'})
     }
 
     isKeyPressed(keys) {
