@@ -63,7 +63,7 @@ export default class Keyboard {
     _keyDownHandler(event) {
         this.currentKeys.add(event.keyCode);
         const action = this._whatIsActivity(event.keyCode);
-        if (action && [...this.currentActivities].filter((el)=> el?.name===action && el?.input ==='key').length==0) {
+        if (action && ![...this.currentActivities].some((el)=> el?.name===action && el?.input ==='key')) {
             this.currentActivities.add({name:action, input: "key"});
             if (action && [...this.currentActivities].filter((el)=> el?.name===action).length<=1) {
                 this.EventDispatcher.dispatch(this.eventList.ACTION_ACTIVATED,{action: action, input: 'key'})

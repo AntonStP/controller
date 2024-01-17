@@ -51,7 +51,7 @@ export default class Mouse {
 
     _pointerDownHandler(event) {
         const action = this._whatIsActivity(event.button);
-        if (action && [...this.currentActivities].filter((el)=> el?.name===action && el?.input ==='mouse').length==0) {
+        if (action && ![...this.currentActivities].some((el)=> el?.name===action && el?.input ==='mouse')) {
             this.currentActivities.add({name: action, input: 'mouse'});
             if (action && [...this.currentActivities].filter((el)=> el?.name===action).length<=1) {
                 this.EventDispatcher.dispatch(this.eventList.ACTION_ACTIVATED,{action: action, input: 'mouse'})
