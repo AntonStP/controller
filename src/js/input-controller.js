@@ -3,37 +3,64 @@ import Mouse from "./mouse-plugin.js";
 import EventDispatcher from "./event-dispatcher.js";
 
 export default class InputController {
-    enabled = false; // <bool>: Включение/отключение генерации событий контроллера
-    focused = false; // <bool>: Находится ли окно с целью контроллера в фокусе
-    eventList = {
-        ACTION_ACTIVATED: "input-controller:action-activated", //название события активации активности (одна из кнопок активности нажата)
-        ACTION_DEACTIVATED: "input-controller:action-deactivated", //одна из кнопок активности отжата
-        CONTROLLER_ATTACH: "input-controller:attach", //привязка контроллера
-        CONTROLLER_DETACH: "input-controller:detach", //отвязка контроллера
-        KEY_IS_PRESSED: "input-controller:isPressed", //проверка нажатия
+    /**
+     *  ACTION_ACTIVATED    название события активации активности (одна из кнопок активности нажата)
+     *  ACTION_DEACTIVATED  одна из кнопок активности отжата
+     *  CONTROLLER_ATTACH   привязка контроллера
+     *  CONTROLLER_DETACH   отвязка контроллера
+     *  KEY_IS_PRESSED      проверка нажатия
+     * @type {{CONTROLLER_ATTACH: string, KEY_IS_PRESSED: string, CONTROLLER_DETACH: string, ACTION_ACTIVATED: string, ACTION_CHANGE: string, ACTION_DEACTIVATED: string}}
+     */
+     EVENT_LIST= {
+        ACTION_ACTIVATED: "input-controller:action-activated",
+        ACTION_DEACTIVATED: "input-controller:action-deactivated",
+        CONTROLLER_ATTACH: "input-controller:attach",
+        CONTROLLER_DETACH: "input-controller:detach",
+        KEY_IS_PRESSED: "input-controller:isPressed",
         ACTION_CHANGE: "input-controller:action-change"
     }
+
+    /**
+     * Включение/отключение генерации событий контроллера
+     * @type {boolean}
+     */
+    enabled = false;
+
+    /**
+     * Находится ли окно с целью контроллера в фокусе
+     * @type {boolean}
+     */
+    focused = false;
+
     currentActivities = new Set();
+    pluginClasses = [];
     activePlugins = new Set();
 
     constructor(actionsToBind, target) {
-        this.target = target;
-        this.actionsToBind = actionsToBind;
-
+        this.registerPlugin = this.registerPlugin.bind(this);
         this.initPlugins = this.initPlugins.bind(this);
-        this.EventDispatcher = new EventDispatcher();//объявление диспатчера
+        this.target = target;
 
+        this.actionsToBind = actionsToBind;
+        this.EventDispatcher = new EventDispatcher();
+
+        this.registerPlugin([Mouse, Keyboard]);
         this.initPlugins();
-        document.addEventListener(this.eventList.ACTION_CHANGE, this.initPlugins);
+        document.addEventListener(this.EVENT_LIST.ACTION_CHANGE, this.initPlugins);
+    }
+
+    registerPlugin(plugins){
+        plugins.forEach((Cls)=> this.pluginClasses.push(Cls));
     }
 
     initPlugins() {
-        for(const [,value] of Object.entries(this.actionsToBind)) {
-            if(!!value?.mouse) this.activePlugins.add('Mouse')
-            if(!!value?.keys) this.activePlugins.add('Keyboard')
-        }
-        for (const plugin of [Mouse, Keyboard]) {
-            if(this.activePlugins.has(plugin.name)) new plugin(this.EventDispatcher, this.actionsToBind, this.currentActivities, this.eventList)
+        this.pluginClasses.forEach(Cls=> {
+            for(const [,value] of Object.entries(this.actionsToBind)) {
+                if(Cls.check(value)) this.activePlugins.add(Cls)
+            }
+        })
+        for (const Plugin of [...this.activePlugins]) {
+            new Plugin(this.EventDispatcher, this.actionsToBind, this.currentActivities, this.EVENT_LIST)
         }
         // new Keyboard(this.actionsToBind, this.currentActivities, this.eventList);
     }
@@ -41,7 +68,7 @@ export default class InputController {
     bindActions(newAction) {
         this.actionsToBind = { ...this.actionsToBind, ...newAction };
         this.initPlugins();
-        this.EventDispatcher.dispatch(this.eventList.ACTION_CHANGE);
+        this.EventDispatcher.dispatch(this.EVENT_LIST.ACTION_CHANGE);
         console.log('this.actionsToBind: ', this.actionsToBind);
     }
 
@@ -65,13 +92,11 @@ export default class InputController {
         if (this.target !== null) this.enabled = true;
         this.focused = true;
         document.addEventListener("visibilitychange", this._focusHandler);
-        this.EventDispatcher.dispatch(this.eventList.CONTROLLER_ATTACH);
+        this.EventDispatcher.dispatch(this.EVENT_LIST.CONTROLLER_ATTACH);
         console.log('attached');
     }
     _focusHandler() {
-        if (document.visibilityState === "visible") {
-            this.focused = true;
-        } else this.focused = false;
+        this.focused = document.visibilityState === "visible";
         console.log("focused", this.focused);
     }
     detach() {
@@ -80,17 +105,17 @@ export default class InputController {
         this.focused = false;
         this.target = null;
         document.removeEventListener("visibilitychange", this._focusHandler);
-        this.EventDispatcher.dispatch(this.eventList.CONTROLLER_DETACH);
+        this.EventDispatcher.dispatch(this.EVENT_LIST.CONTROLLER_DETACH);
         console.log('detached');
     }
 
     isActionActive(action) {
         //Проверяет активирована ли переданная активность в контроллере
         //( напр. для клавиатуры: зажата ли одна из соответствующих этой активности кнопок)
-        return [...this.currentActivities].filter((el)=> el?.name===action).length>0 ? true : false;
+        return [...this.currentActivities].some((el)=> el?.name===action);
     }
 
     isKeyPressed(...keys) {
-        this.EventDispatcher.dispatch(this.eventList.KEY_IS_PRESSED, {keys: keys});
+        this.EventDispatcher.dispatch(this.EVENT_LIST.KEY_IS_PRESSED, {keys: keys});
     }
 }

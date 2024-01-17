@@ -1,15 +1,23 @@
 export default class Mouse {
+    /**
+     * проверка по экшену, нужно ли подключать этот плагин
+     * @param data
+     * @returns {boolean}
+     */
+    static check(data){
+        return !!data.mouse;
+    }
 
     constructor(EventDispatcher, actionsToBind, currentActivities, eventList) {
-        this.EventDispatcher = EventDispatcher;
-        this.actionsToBind = actionsToBind;
-        this.currentActivities = currentActivities;
-        this.eventList = eventList;
-
         this.attach = this.attach.bind(this);
         this.detach = this.detach.bind(this);
         this._pointerDownHandler = this._pointerDownHandler.bind(this);
         this._pointerUpHandler = this._pointerUpHandler.bind(this);
+
+        this.EventDispatcher = EventDispatcher;
+        this.actionsToBind = actionsToBind;
+        this.currentActivities = currentActivities;
+        this.eventList = eventList;
 
         document.addEventListener(this.eventList.CONTROLLER_ATTACH, this.attach);
         document.addEventListener(this.eventList.CONTROLLER_DETACH, this.detach);
@@ -59,8 +67,6 @@ export default class Mouse {
         currentActivitiesArray.forEach((el) => {
             if ((el.name==action && el.input!=="mouse") || el.name!==action) this.currentActivities.add(el);
         });
-        this.EventDispatcher.dispatch(this.eventList.ACTION_DEACTIVATED,{action: action, input: 'mouse'})
-
         this.EventDispatcher.dispatch(this.eventList.ACTION_DEACTIVATED,{action: action, input: 'mouse'})
     }
 

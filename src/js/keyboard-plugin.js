@@ -1,17 +1,27 @@
 export default class Keyboard {
+    /**
+     * проверка по экшену, нужно ли подключать этот плагин
+     * @param data
+     * @returns {boolean}
+     */
+    static check(data){
+        return !!data.keys;
+    }
+
     currentKeys = new Set();
 
     constructor(EventDispatcher, actionsToBind, currentActivities, eventList) {
-        this.EventDispatcher = EventDispatcher;
-        this.actionsToBind = actionsToBind;
-        this.currentActivities = currentActivities;
-        this.eventList = eventList;
-
         this._keyDownHandler = this._keyDownHandler.bind(this);
         this._keyUpHandler = this._keyUpHandler.bind(this);
         this.attach = this.attach.bind(this);
         this.detach = this.detach.bind(this);
         this.isKeyPressed = this.isKeyPressed.bind(this);
+
+        this.EventDispatcher = EventDispatcher;
+        this.actionsToBind = actionsToBind;
+        this.currentActivities = currentActivities;
+        this.eventList = eventList;
+
 
         document.addEventListener(this.eventList.CONTROLLER_ATTACH, this.attach);
         document.addEventListener(this.eventList.CONTROLLER_DETACH, this.detach);
@@ -47,6 +57,7 @@ export default class Keyboard {
         }
         return activity;
     }
+    
 
 
     _keyDownHandler(event) {
@@ -67,7 +78,7 @@ export default class Keyboard {
         const currentActivitiesArray = [...this.currentActivities];
         this.currentActivities.clear();
         currentActivitiesArray.forEach((el) => {
-            if ((el.name==action && el.input!=="key") || el.name!==action) this.currentActivities.add(el);
+            if ((el.name===action && el.input!=="key") || el.name!==action) this.currentActivities.add(el);
         });
         this.EventDispatcher.dispatch(this.eventList.ACTION_DEACTIVATED,{action: action, input: 'key'})
     }
